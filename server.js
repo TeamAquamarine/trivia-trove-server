@@ -11,7 +11,7 @@ const superagent = require('superagent');
 /***********************************
  *           SERVER SETUP           *
  ************************************/
-const app = espress();
+const app = express();
 const PORT = process.env.PORT;
 
 /***********************************
