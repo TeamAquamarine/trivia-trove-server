@@ -35,11 +35,16 @@ app.use(express.urlencoded());
 
 app.get('/', (req, res) => {
   res.send('Hello World');
-})
+});
 
 
 // ALL OTHER ENDPOINTS MUST GO BELOW HERE!
+app.get('*', (req, res) => {
+  // route to error-view
+  // page(() => page('/error-vew')); or something
 
+  res.status(404).send('Error: File requested could not be found');
+});
 
 /***********************************
 *              LISTEN              *
