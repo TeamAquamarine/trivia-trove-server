@@ -33,12 +33,20 @@ app.use(express.urlencoded());
 *          API ENDPOINTS           *
 ************************************/
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
+app.get('/api/v1/categories', (req, res) => {
+
+  let url = 'https://opentdb.com/api_category.php'
+  superagent
+    .get(url)
+    .then(results => {
+      res.send(results.body.trivia_categories)
+    })
+    .catch(err => console.error(err));
 });
 
 
-// ALL OTHER ENDPOINTS MUST GO BELOW HERE!
+
+// ALL OTHER ENDPOINTS MUST GO ABOVE HERE!
 app.get('*', (req, res) => {
   // route to error-view
   // page(() => page('/error-vew')); or something
