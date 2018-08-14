@@ -37,6 +37,10 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 })
 
+
+// ALL OTHER ENDPOINTS MUST GO BELOW HERE!
+
+
 /***********************************
 *              LISTEN              *
 ************************************/
