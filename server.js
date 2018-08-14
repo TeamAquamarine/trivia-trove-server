@@ -1,5 +1,4 @@
 'use strict';
-// Commenting for issue test
 /***********************************
 *           DEPENDENCIES           *
 ************************************/
@@ -12,14 +11,14 @@ const superagent = require('superagent');
  *           SERVER SETUP           *
  ************************************/
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 /***********************************
 *          DATABASE SETUP          *
 ************************************/
-const client = new pg.Client(process.env.DATABASE_URL);
-client.connect();
-client.on('error', err => console.error(err));
+// const client = new pg.Client(process.env.DATABASE_URL);
+// client.connect();
+// client.on('error', err => console.error(err));
 
 
 /***********************************
@@ -34,7 +33,9 @@ app.use(express.urlencoded());
 *          API ENDPOINTS           *
 ************************************/
 
-
+app.get('/', (req, res) => {
+  res.send('Hello World');
+})
 
 /***********************************
 *              LISTEN              *
