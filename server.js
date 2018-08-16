@@ -16,9 +16,9 @@ const PORT = process.env.PORT || 3000;
 /***********************************
 *          DATABASE SETUP          *
 ************************************/
-// const client = new pg.Client(process.env.DATABASE_URL);
-// client.connect();
-// client.on('error', err => console.error(err));
+const client = new pg.Client(process.env.DATABASE_URL);
+client.connect();
+client.on('error', err => console.error(err));
 
 
 /***********************************
@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3000;
 ************************************/
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended : true}));
 
 
 /***********************************
@@ -65,6 +65,18 @@ app.get('/api/v1/highscores:category', (req, res) => {
     .catch(console.error);
 });
 
+app.post('/api/v1/highscores', (req, res) => {
+  let SQL = `INSERT INTO highscores(initials, category, score)
+  VALUES($1, $2, $3) ON CONFLICT DO NOTHING;`;
+  let values = [
+    req.body.initials,
+    req.body.category,
+    req.body.score
+  ];
+  client.query(SQL, values)
+  .then(results => res.send(results.rows))
+});
+
 /***********************************
 *          CATCH-ALL ENDPOINT           *
 ************************************/
@@ -74,8 +86,26 @@ app.get('*', (req, res) => {
 
   res.status(404).send('Error: File requested could not be found');
 });
-
+loadDB();
 /***********************************
 *              LISTEN              *
 ************************************/
 app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
+
+/***********************************
+*        DB Helper Functions      *
+************************************/
+function loadDB() {
+client.query(`
+  CREATE TABLE IF NOT EXISTS
+  highscores (
+    id SERIAL PRIMARY KEY,
+    initials VARCHAR(3),
+    category VARCHAR(60),
+    score INTEGER
+  );`
+)
+.catch(err => {
+  console.error(err)
+});
+}
