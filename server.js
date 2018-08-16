@@ -16,9 +16,9 @@ const PORT = process.env.PORT || 3000;
 /***********************************
 *          DATABASE SETUP          *
 ************************************/
-// const client = new pg.Client(process.env.DATABASE_URL);
-// client.connect();
-// client.on('error', err => console.error(err));
+const client = new pg.Client(process.env.DATABASE_URL);
+client.connect();
+client.on('error', err => console.error(err));
 
 
 /***********************************
@@ -74,8 +74,26 @@ app.get('*', (req, res) => {
 
   res.status(404).send('Error: File requested could not be found');
 });
-
+loadDB();
 /***********************************
 *              LISTEN              *
 ************************************/
 app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
+
+/***********************************
+*        DB Helper Functions      *
+************************************/
+function loadDB() {
+client.query(`
+  CREATE TABLE IF NOT EXISTS
+  highscores (
+    id SERIAL PRIMARY KEY,
+    initials VARCHAR(3),
+    category VARCHAR(60),
+    score INTEGER
+  );`
+)
+.catch(err => {
+  console.error(err)
+});
+}
