@@ -30,7 +30,7 @@ app.use(express.urlencoded());
 
 
 /***********************************
-*          API ENDPOINTS           *
+*        3rd-Party API ENDPOINTS           *
 ************************************/
 
 app.get('/api/v1/categories', (req, res) => {
@@ -44,9 +44,30 @@ app.get('/api/v1/categories', (req, res) => {
     .catch(err => console.error(err));
 });
 
+/***********************************
+*          DB ENDPOINTS           *
+************************************/
 
+app.get('/api/v1/highscores', (req, res) => {
+  let SQL = `SELECT * from highscores`;
 
-// ALL OTHER ENDPOINTS MUST GO ABOVE HERE!
+  client.query(SQL)
+    .then(results => res.send(results.rows))
+    .catch(console.error);
+});
+
+app.get('/api/v1/highscores:category', (req, res) => {
+  let SQL = `SELECT * from highscores WHERE category=$1`;
+  let values = [req.body.category]
+
+  client.query(SQL)
+    .then(results => res.send(results.rows))
+    .catch(console.error);
+});
+
+/***********************************
+*          CATCH-ALL ENDPOINT           *
+************************************/
 app.get('*', (req, res) => {
   // route to error-view
   // page(() => page('/error-vew')); or something
