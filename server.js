@@ -26,7 +26,7 @@ client.on('error', err => console.error(err));
 ************************************/
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended : true}));
 
 
 /***********************************
@@ -63,6 +63,18 @@ app.get('/api/v1/highscores:category', (req, res) => {
   client.query(SQL)
     .then(results => res.send(results.rows))
     .catch(console.error);
+});
+
+app.post('/api/v1/highscores', (req, res) => {
+  let SQL = `INSERT INTO highscores(initials, category, score)
+  VALUES($1, $2, $3) ON CONFLICT DO NOTHING;`;
+  let values = [
+    req.body.initials,
+    req.body.category,
+    req.body.score
+  ];
+  client.query(SQL, values)
+  .then(results => res.send(results.rows))
 });
 
 /***********************************
