@@ -26,7 +26,7 @@ client.on('error', err => console.error(err));
 ************************************/
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended : true}));
+app.use(express.urlencoded({ extended: true }));
 
 
 /***********************************
@@ -49,7 +49,7 @@ app.get('/api/v1/categories', (req, res) => {
 ************************************/
 
 app.get('/api/v1/highscores', (req, res) => {
-  let SQL = `SELECT * from highscores`;
+  let SQL = `SELECT * from highscores ORDER BY score DESC LIMIT 10`;
 
   client.query(SQL)
     .then(results => res.send(results.rows))
@@ -74,7 +74,7 @@ app.post('/api/v1/highscores', (req, res) => {
     req.body.score
   ];
   client.query(SQL, values)
-  .then(results => res.send(results.rows))
+    .then(results => res.send(results.rows))
 });
 
 /***********************************
@@ -96,7 +96,7 @@ app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
 *        DB Helper Functions      *
 ************************************/
 function loadDB() {
-client.query(`
+  client.query(`
   CREATE TABLE IF NOT EXISTS
   highscores (
     id SERIAL PRIMARY KEY,
@@ -104,8 +104,8 @@ client.query(`
     category VARCHAR(60),
     score INTEGER
   );`
-)
-.catch(err => {
-  console.error(err)
-});
+  )
+    .catch(err => {
+      console.error(err)
+    });
 }
